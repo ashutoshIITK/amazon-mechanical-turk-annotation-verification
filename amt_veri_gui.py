@@ -32,7 +32,7 @@ form = sg.FlexForm("AMT Annotation Verification for Bounding Boxes", return_keyb
 image_elem = sg.Image(filename=png_files[0],size=(w, h))
 filename_display_elem = sg.Text(png_files[0], size=(80, 3))
 file_num_display_elem = sg.Text('File 1 of {}'.format(len(png_files)), size=(20,1))
-addtional_info = sg.Text('Working Time:{}, Approval Rate: {}'.format(1,2), size=(25,2))
+addtional_info = sg.Text('Working Time:{}, Approval Rate: {}'.format(1,2), size=(25,3))
 filename = png_files[0]
 # define layout, show and read the form
 col = [[filename_display_elem],
@@ -49,7 +49,6 @@ button, values = form.Layout(layout).Read()          # Shows form on screen
 
 # loop reading the user input and displaying image, filename
 i = 0
-flag = True
 while True:
 
     # perform button and keyboard operations
@@ -61,14 +60,23 @@ while True:
     elif button in ('Prev', 'MouseWheel:Up', 'Up:38', 'Prior:33') and i > 0:
         i -= 1
 
-    elif button in ('Approve', 'MouseWheel:Down', 'Down:40', 'Next:34') and i < len(png_files)-1:
+    elif button in ('Approve', 'MouseWheel:Down', 'Down:40', 'Next:34') and i < len(png_files):
         annotations_results.loc[annotations_results["Input.image_url"] == f"https://mturk-dataset.s3-ap-northeast-1.amazonaws.com/ash/{filename.split('@')[-1][:-3]}jpg", "Approve"] = "x"
         i += 1
         print('You have approved this annotation!')
-    elif button in  ("Reject",'MouseWheel:Down', 'Down:40', 'Next:34') and i < len(png_files)-1:
+
+        if i == len(png_files):
+            annotations_results.to_csv(saved_df_name, index = False)
+
+
+    elif button in  ("Reject",'MouseWheel:Down', 'Down:40', 'Next:34') and i < len(png_files):
         annotations_results.loc[annotations_results["Input.image_url"] == f"https://mturk-dataset.s3-ap-northeast-1.amazonaws.com/ash/{filename.split('@')[-1][:-3]}jpg", "Reject"] = "poor quality"
         i += 1
         print("You have rejected this annotation.")
+
+        if i == len(png_files):
+            annotations_results.to_csv(saved_df_name, index = False)
+            
     elif button == "Save Work":
         annotations_results.to_csv(saved_df_name, index = False)
         print("Saving Dataframe to CSV.")
@@ -83,7 +91,7 @@ while True:
     # update window with new image
     image_elem.Update(filename=filename)
     # update window with filename
-    filename_display_elem.Update("filename")
+    filename_display_elem.Update(filename=filename)
     # update page display
     file_num_display_elem.Update('File {} of {}'.format(i+1, len(png_files)))
 
