@@ -7,14 +7,14 @@ import pandas as pd
 
 w, h = sg.Window.get_screen_size()
 
-df_name = "Batch_4052999_batch_results.csv"
+df_name = "Batch_4046888_batch_results.csv"
 
 annotations_results = pd.read_csv(f"data/{df_name}")
 
 saved_df_name = df_name.split(".")[0] + "_completed.csv"
 
 # Get the folder containing the images from the user
-folder = sg.PopupGetFolder('AMT Annotation Verification for Bounding Boxes', 'Image folder to open', default_path='/home/ubuntu/Desktop/FY2020/MastersResearch/amazon-mechanical-turk-annotation-verification/output/third')
+folder = sg.PopupGetFolder('AMT Annotation Verification for Bounding Boxes', 'Image folder to open', default_path=f'/home/ubuntu/Desktop/FY2020/MastersResearch/amazon-mechanical-turk-annotation-verification/output/{df_name.split(".")[0]}')
 
 # get list of PNG files in folder
 png_files = [folder + '/' + f for f in os.listdir(folder) if '.png' in f]
@@ -91,7 +91,7 @@ while True:
     # update window with new image
     image_elem.Update(filename=filename)
     # update window with filename
-    filename_display_elem.Update(filename=filename)
+    filename_display_elem.Update(filename)
     # update page display
     file_num_display_elem.Update('File {} of {}'.format(i+1, len(png_files)))
 
