@@ -7,7 +7,7 @@ import pandas as pd
 
 w, h = sg.Window.get_screen_size()
 
-df_name = "Batch_4046888_batch_results.csv"
+df_name = "Batch_4061620_batch_results.csv"
 
 annotations_results = pd.read_csv(f"data/{df_name}")
 
